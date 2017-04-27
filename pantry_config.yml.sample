@@ -1,0 +1,21 @@
+---
+pantry:
+  config:
+    home: "[path-to-your-home]"
+    backup_folder: "[path-to-your-dropbox-or-other-cloud-system]"
+
+  stuff:
+    # Here you can find some examples, change'em at your convinence
+    # WARNING: if you want to copy the content of a folder
+    # always put a dot at the end of the path, "folder/."
+
+    # Since this config file is ignored by git
+    # I would suggest to add it to your backup
+    my_pantry: "bin/pantry/pantry_config.yml"
+
+    ssh: ".ssh/."
+    gitconfig: ".gitconfig"
+    gitignore: ".gitignore"
+    zsh: ".zshrc"
+    oh_my_zsh: ".oh-my-zsh/custom/."
+    sublime: "Library/Application\ Support/Sublime\ Text\ 3/Packages/User/."
