@@ -13,13 +13,16 @@ I'm sick to configure my computer from scratch evrytime I get a new machine. I a
 * Update these files without worries
 * When you'll get a new computer, just copy your backuped files in the right folder (untill a good developer will commit an authomatic restore procedure! :))
 
+## Install
+
+* clone this repo wherever you want (bin directory?)
+* rename pantry_config.yml.sample to pantry_sample.yml
+* edit your config to define your paths
+* set permission 667 to your pantry.rb file
+* set a crontab (if you can!) to run every x hours
 
 ## To do
 
-* Use YAML to configure the goods
-* Set a sample.yml and ignore mine
-* Build a directory structure if it doesn't exists
 * Find the best way to setup a crontab
-* Get stuff from the pantry to setup an environment
-* Use a git repo as backup destination
-* Write doc on readme file
+* Restore stuff from pantry to setup a new environment
+* Use a git repo as destination backup
