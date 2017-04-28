@@ -5,7 +5,7 @@ If you are a real developer, this script is too stupid for you and for sure you 
 
 ## Idea
 
-I'm sick to configure my computer from scratch evrytime I get a new machine. I always miss some important file from my old computer. I'm too dumb to learn how to use a chef recipes or one of those complicated dotfiles systems that make tons of things except what I really need. So I thought I need something super easy to config and super easy to maintain, and in a couple of hours I've build a pantry!
+I'm sick of configuring my computer from scratch evrytime I get a new machine. I always miss some important file from my old computer. I'm too dumb to learn how to use a chef recipes or one of those complicated dotfiles systems that make tons of things except what I really need. So I thought I need something super easy to config and super easy to maintain, and in a couple of hours I've build a pantry!
 
 * Choose the important files or folders from your HOME or Applications Data (.ssh, .gitconfig, .zsh, sublime user settings ecc...)
 * Choose a destination folder to backup (i.e a Drobpox folder)
