@@ -54,15 +54,50 @@ if File.exists?("pantry_config.yml")
     end
   end
 
-  if @restore
-    puts "Restore the system"
-  end
 
 else
   die "Missing config file"
 end
 
+if @restore
+  puts "Restore the system"
+  puts "--------------------------------------"
+  stuff.each do |k, ctx|
+    from = "#{@backup}/#{ctx}"
+    dest_path = Pathname.new(ctx)
+    dest = "#{@home}/#{dest_path}"
+    a_path = ctx.split("/")
 
+    # if its a root file, just copy it and go on
+    if a_path.count == 1
+      FileUtils.cp_r from, dest
+      puts "Restore #{k} from backup"
+      next
+    end
+    if a_path.count > 1
+      # ok, path contains one or more directories
+
+      if Pathname.new(from).directory?
+        # let's create the whole tree
+        FileUtils.mkpath dest
+
+        # copy the source dir content to the target
+        FileUtils.cp_r from, dest
+        puts "Restore #{k} from backup"
+      else
+        # this is a file within a directory tree
+        # I must create the correct tree
+        FileUtils.mkpath Pathname.new(dest).dirname
+
+        # and copy the single file in the last directory
+        FileUtils.cp from, dest
+        puts "Restore #{k} from backup"
+      end
+    end
+  end
+  puts "--------------------------------------"
+  puts "Restore completed"
+end
 
 
 if not @restore
