@@ -1,8 +1,10 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 require 'fileutils'
-require 'yaml'
+require 'git'
 require 'pathname'
+require 'yaml'
+
 
 def check_path?(directory)
   File.exists?(directory)
@@ -18,9 +20,10 @@ end
 # Also Check if config folders are valid
 
 if File.exists?("pantry_config.yml")
-  yml    = YAML.load_file("pantry_config.yml")
-  config = yml["pantry"]["config"]
-  stuff  = yml["pantry"]["stuff"]
+  yml     = YAML.load_file("pantry_config.yml")
+  config  = yml["pantry"]["config"]
+  stuff   = yml["pantry"]["stuff"]
+  use_git = yml["pantry"]["config"]["use_git"] || false
 
   if config["home"].nil? || config["home"] == "" || config["home"] == "[path-to-your-home]"
     die "Need to know your home path"
@@ -30,12 +33,12 @@ if File.exists?("pantry_config.yml")
     @home = config["home"]
   end
 
-  if config["backup_folder"].nil? || config["backup_folder"] == "" || config["backup_folder"] == "[path-to-your-dropbox-or-other-cloud-system]"
+  if config["local_folder"].nil? || config["local_folder"] == "" || config["local_folder"] == "[path-to-your-dropbox-or-other-cloud-system]"
     die "Need to know your backup path"
-  elsif check_path?(config["backup_folder"]) == false
+  elsif check_path?(config["local_folder"]) == false
     die "Backup is not a valid folder."
   else
-    @backup = config["backup_folder"]
+    @backup = config["local_folder"]
   end
 
   if stuff.nil? || stuff.empty?
@@ -80,6 +83,25 @@ stuff.each do |k, ctx|
       # and copy the single file in the last directory
       FileUtils.cp from, dest
       puts "Performing backups for #{k}"
+    end
+  end
+end
+
+
+# if you have choosen to use GIT as backup system
+
+if use_git == true
+  g = Git.open(@backup)
+  if g and g.index.readable? and g.index.writable?
+    message = "Stuff backuped on #{Time.now}"
+    g.add(:all=>true)
+
+    if g.status.changed.count > 0
+      g.commit(message)
+      g.push
+      puts "GIT STATUS: #{message}"
+    else
+      puts "GIT STATUS: nothing new to commit"
     end
   end
 end
