@@ -15,9 +15,11 @@ def die(msg)
   exit
 end
 
+
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
 # Also Check if config folders are valid
+
 
 if File.exists?("pantry_config.yml")
   yml     = YAML.load_file("pantry_config.yml")
@@ -44,64 +46,80 @@ if File.exists?("pantry_config.yml")
   if stuff.nil? || stuff.empty?
     die "There's nothing to backup"
   end
+
+  @restore ||= false
+  ARGV.each do|a|
+    if a == "restore"
+      @restore = true
+    end
+  end
+
+  if @restore
+    puts "Restore the system"
+  end
+
 else
   die "Missing config file"
 end
 
 
-# I want to copy a set of files or folders into a different specific (eg dropbox folder)
-# each file goes in a defined path
 
-stuff.each do |k, ctx|
-  from = "#{@home}/#{ctx}"
-  dest_path = Pathname.new(ctx)
-  dest = "#{@backup}/#{dest_path}"
-  a_path = ctx.split("/")
 
-  # if its a root file, just copy it and go on
-  if a_path.count == 1
-    FileUtils.cp_r from, dest
-    puts "Performing backups for #{k}"
-    next
-  end
+if not @restore
+  # I want to copy a set of files or folders into a different specific (eg dropbox folder)
+  # each file goes in a defined path
 
-  if a_path.count > 1
-    # ok, path contains one or more directories
+  stuff.each do |k, ctx|
+    from = "#{@home}/#{ctx}"
+    dest_path = Pathname.new(ctx)
+    dest = "#{@backup}/#{dest_path}"
+    a_path = ctx.split("/")
 
-    if Pathname.new(from).directory?
-      # let's create the whole tree
-      FileUtils.mkpath dest
-
-      # copy the source dir content to the target
+    # if its a root file, just copy it and go on
+    if a_path.count == 1
       FileUtils.cp_r from, dest
       puts "Performing backups for #{k}"
-    else
-      # this is a file within a directory tree
-      # I must create the correct tree
-      FileUtils.mkpath Pathname.new(dest).dirname
+      next
+    end
 
-      # and copy the single file in the last directory
-      FileUtils.cp from, dest
-      puts "Performing backups for #{k}"
+    if a_path.count > 1
+      # ok, path contains one or more directories
+
+      if Pathname.new(from).directory?
+        # let's create the whole tree
+        FileUtils.mkpath dest
+
+        # copy the source dir content to the target
+        FileUtils.cp_r from, dest
+        puts "Performing backups for #{k}"
+      else
+        # this is a file within a directory tree
+        # I must create the correct tree
+        FileUtils.mkpath Pathname.new(dest).dirname
+
+        # and copy the single file in the last directory
+        FileUtils.cp from, dest
+        puts "Performing backups for #{k}"
+      end
     end
   end
-end
 
 
-# if you have choosen to use GIT as backup system
+  # if you have choosen to use GIT as backup system
 
-if use_git == true
-  g = Git.open(@backup)
-  if g and g.index.readable? and g.index.writable?
-    message = "Stuff backuped on #{Time.now}"
-    g.add(:all=>true)
+  if use_git == true
+    g = Git.open(@backup)
+    if g and g.index.readable? and g.index.writable?
+      message = "Stuff backuped on #{Time.now}"
+      g.add(:all=>true)
 
-    if g.status.changed.count > 0
-      g.commit(message)
-      g.push
-      puts "GIT STATUS: #{message}"
-    else
-      puts "GIT STATUS: nothing new to commit"
+      if g.status.changed.count > 0
+        g.commit(message)
+        g.push
+        puts "GIT STATUS: #{message}"
+      else
+        puts "GIT STATUS: nothing new to commit"
+      end
     end
   end
 end
