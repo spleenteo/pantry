@@ -46,6 +46,12 @@ How to do it:
 Use GIT, clone your private repo in a dropbox folder and set in it in the local_folder config variable. You'll have a double backup.
 
 
+## Restore from backup
+
+Once you have your software installed (ie. zsh, oh-my-zsh, sublime ecc) on your new mac/pc, you just have to clone your private repo and run ```./pantry.sh restore``` to copy all files in their original position, according to the path written in the config file, stuff section.
+
+Restoring might be a delicate operations, since it wirtes system files. Do it carefully. If you are not sure of what you are doing, avoid the automatic restore and copy the files manually.
+
 ## To do (if you are a real-dev® and want to help)
 
 * Find the best way to setup a crontab
