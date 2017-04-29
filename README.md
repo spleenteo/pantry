@@ -9,7 +9,7 @@ I'm sick of configuring my computer from scratch evrytime I get a new machine. I
 
 * Choose the important files or folders from your HOME or Applications Data (.ssh, .gitconfig, .zsh, sublime user settings ecc...)
 * Choose a destination folder to backup (i.e a Drobpox folder)
-* You can use a git repo to backup your file if you like
+* You can use a git repo to backup your files
 * Set a cronjob to run the script as often as you want (once a day is enough for me. I've also set an action on Marathono)
 * Update these files without worries
 * When you'll get a new computer, just copy your backuped files in the right folder (untill a good developer will commit an authomatic restore procedure! :))
@@ -18,9 +18,9 @@ I'm sick of configuring my computer from scratch evrytime I get a new machine. I
 
 * Clone this repo wherever you want (maybe your user bin directory?)
 * ```bundle install```
-* Rename pantry_config.yml.sample to pantry_sample.yml
-* Edit your config to define your paths
-* Set chmod to execute your pantry.rb file [600 should be ok]
+* Rename ```pantry_config.yml.sample``` to ```pantry_sample.yml```
+* Edit the config to define your paths
+* Set ```chmod``` to execute your ```pantry.rbv``` file [600 should be ok]
 * Set a crontab (if you know how!) to run the script every x hours
 
 ## The easy way: use Dropbox or any other cloud system
@@ -39,9 +39,9 @@ How to do it:
 * Clone it wherever you want in your computer
 * Set ``` local_folder: [to-your-git-folder]``` in your ```pantry_config.yml```file
 * Set ``` use_git: true``` in your ```pantry_config.yml```file
-* Run the script and enjoy. Pantry checks the diff in the folder, adds new files, creates the commit and push the stuff.
+* Run the script and enjoy. Pantry checks the diff in the folder, adds new or updated files, creates the commit and push the stuff.
 
-## The paraoid way
+## The paranoid way
 
 Use GIT, clone your private repo in a dropbox folder and set in it in the local_folder config variable. You'll have a double backup.
 
@@ -51,4 +51,4 @@ Use GIT, clone your private repo in a dropbox folder and set in it in the local_
 * Find the best way to setup a crontab
 * Restore stuff from pantry to setup a new environment
 * Refactoring of the code to make it more solid and elegant
-* Write a better README in english
+* Write a better ```README.md``` in english
