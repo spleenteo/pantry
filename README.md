@@ -1,7 +1,7 @@
 # Pantry
 
 This is a simple script to backup your HOME's stuff.
-If you are a _real developer_®, this script is too stupid for you and for sure you know dozens of awesome tools that do what this silly program does.  Don't waste your time with this dildo!
+If you are a *real developer*®, this script is too stupid for you and for sure you know dozens of awesome tools that do what this silly program does.  Don't waste your time with this dildo!
 
 ## Idea
 
@@ -55,6 +55,6 @@ Restoring might be a delicate operations, since it wirtes system files. Do it ca
 ## To do (if you are a real-dev® and want to help)
 
 * Find the best way to setup a crontab
-* Restore stuff from pantry to setup a new environment
+* Create a REPL to copy each file interactively
 * Refactoring of the code to make it more solid and elegant
 * Write a better ```README.md``` in english
