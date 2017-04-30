@@ -12,7 +12,7 @@ I'm sick of configuring my computer from scratch evrytime I get a new machine. I
 * You can use a git repo to backup your files
 * Set a cronjob to run the script as often as you want (once a day is enough for me. I've also set an action on Marathono)
 * Update these files without worries
-* When you'll get a new computer, just copy your backuped files in the right folder (untill a good developer will commit an authomatic restore procedure! :))
+* When you'll get a new computer, just copy your backuped files in the right folder or use the ```restore```parameter to do the magic.
 
 ## Install
 
@@ -50,7 +50,7 @@ Use GIT, clone your private repo in a dropbox folder and set in it in the local_
 
 Once you have your software installed (ie. zsh, oh-my-zsh, sublime ecc) on your new mac/pc, you just have to clone your private repo and run ```./pantry.sh restore``` to copy all files in their original position, according to the path written in the config file, stuff section.
 
-Restoring might be a delicate operations, since it wirtes system files. Do it carefully. If you are not sure of what you are doing, avoid the automatic restore and copy the files manually.
+Restoring might be a delicate operation, since it overwrites files in your HOME. Do it carefully. If you don't know what you are doing, avoid the automatic restoring and copy the files manually from the backup folder.
 
 ## To do (if you are a real-dev® and want to help)
 
