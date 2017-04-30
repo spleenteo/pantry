@@ -18,27 +18,27 @@ I'm sick of configuring my computer from scratch evrytime I get a new machine. I
 
 * Clone this repo wherever you want (maybe your user bin directory?)
 * ```bundle install```
-* Rename ```pantry_config.yml.sample``` to ```pantry_sample.yml```
-* Edit the config to define your paths
-* Set ```chmod``` to execute your ```pantry.rbv``` file [600 should be ok]
+* Rename ```pantry_config.yml.sample``` to ```pantry_config.yml```
+* Edit the configuration file to define your paths
+* Set ```chmod``` to execute your ```pantry.rb``` file [600 should be ok?]
 * Set a crontab (if you know how!) to run the script every x hours
 
 ## The easy way: use Dropbox or any other cloud system
 
-If you wish to store your backup in a cloud system, just create a folder in your dropbox/drive and copy the absolute path in ```local_folder``` in ```pantry_config.yml```.
+Just create a folder in your dropbox/drive or other cloud storage system and copy the absolute path in ```local_folder``` in ```pantry_config.yml```.
 
-Every time the script runs, it copy all your stuff in this folder and you'll have a auomatic upload.
+Every time the script runs, it copies all your stuff in this folder and you'll get your stuff backuped on the cloud.
 
 ## The ninja dev way: use a repo GIT
 
-If you know how to use GIT (and as you are reading this on github, you might know it), you can automatically backup your stuff.
+If you know how to use GIT (and if you are using github and want to use Pantry, you might know it), you can automatically backup your stuff on a private repo.
 
 How to do it:
 
 * Create your private repo (github, bitbucket, gitlab or wherever you want)
 * Clone it wherever you want in your computer
-* Set ``` local_folder: [to-your-git-folder]``` in your ```pantry_config.yml```file
-* Set ``` use_git: true``` in your ```pantry_config.yml```file
+* Write the path to your local git folder in ``` local_folder: [to-your-git-folder]``` in the ```pantry/pantry_config.yml```file
+* Always in the config file, set ``` use_git: true```
 * Run the script and enjoy. Pantry checks the diff in the folder, adds new or updated files, creates the commit and push the stuff.
 
 ## The paranoid way
