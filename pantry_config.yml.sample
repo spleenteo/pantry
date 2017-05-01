@@ -3,8 +3,7 @@ pantry:
   config:
     home: "[path-to-your-home]"
     local_folder: "[path-to-your-dropbox-or-git-folder]"
-    use_git: [true/false]
-    git_repo: "[path-to-your-git-repo]"
+    use_git: false
 
   stuff:
     # WARNING: if you want to copy the content of a folder
