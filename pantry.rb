@@ -5,7 +5,6 @@ require 'git'
 require 'pathname'
 require 'yaml'
 
-
 def check_path?(directory)
   File.exists?(directory)
 end
@@ -15,14 +14,35 @@ def die(msg)
   exit
 end
 
+def header(msg)
+  puts "\n\n--------------------------------------"
+  puts "==> #{msg}"
+  puts "--------------------------------------"
+end
+
+
+@pantry_path = Pathname.new($0).realpath().sub("pantry.rb", "")
+@config_file = "#{@pantry_path}pantry_config.yml"
+@restore     ||= false
+@test        ||= false
+
+ARGV.each do|a|
+  case a
+    when "restore"
+      @restore = true
+    when "check"
+      @check = true
+  end
+end
+
 
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
 # Also Check if config folders are valid
 
 
-if File.exists?("pantry_config.yml")
-  yml     = YAML.load_file("pantry_config.yml")
+if File.exists?(@config_file)
+  yml     = YAML.load_file(@config_file)
   config  = yml["pantry"]["config"]
   stuff   = yml["pantry"]["stuff"]
   use_git = yml["pantry"]["config"]["use_git"] || false
@@ -46,22 +66,30 @@ if File.exists?("pantry_config.yml")
   if stuff.nil? || stuff.empty?
     die "There's nothing to backup"
   end
-
-  @restore ||= false
-  ARGV.each do|a|
-    if a == "restore"
-      @restore = true
-    end
-  end
-
-
 else
   die "Missing config file"
 end
 
+
+if @check
+  header("Check Up")
+  puts "Pantry path: #{@pantry_path}"
+  puts "Local folder: #{@backup}"
+  puts "Items in stuff: #{stuff.count}"
+
+  puts "Items list:"
+  stuff.each do |k, ctx|
+    puts "- #{k}"
+  end
+  puts "Use GIT: #{use_git}"
+
+  exit
+end
+
+
 if @restore
-  puts "Restore the system"
-  puts "--------------------------------------"
+  header("Restore the system")
+
   stuff.each do |k, ctx|
     from = "#{@backup}/#{ctx}"
     dest_path = Pathname.new(ctx)
@@ -95,8 +123,7 @@ if @restore
       end
     end
   end
-  puts "--------------------------------------"
-  puts "Restore completed"
+  header("Restore completed")
 end
 
 
@@ -104,6 +131,7 @@ if not @restore
   # I want to copy a set of files or folders into a different specific (eg dropbox folder)
   # each file goes in a defined path
 
+  header("Backup everything")
   stuff.each do |k, ctx|
     from = "#{@home}/#{ctx}"
     dest_path = Pathname.new(ctx)
@@ -113,7 +141,7 @@ if not @restore
     # if its a root file, just copy it and go on
     if a_path.count == 1
       FileUtils.cp_r from, dest
-      puts "Performing backups for #{k}"
+      puts "Copying files for #{k}"
       next
     end
 
@@ -126,7 +154,7 @@ if not @restore
 
         # copy the source dir content to the target
         FileUtils.cp_r from, dest
-        puts "Performing backups for #{k}"
+        puts "Copying files for #{k}"
       else
         # this is a file within a directory tree
         # I must create the correct tree
@@ -134,7 +162,7 @@ if not @restore
 
         # and copy the single file in the last directory
         FileUtils.cp from, dest
-        puts "Performing backups for #{k}"
+        puts "Copying files for #{k}"
       end
     end
   end
@@ -143,6 +171,7 @@ if not @restore
   # if you have choosen to use GIT as backup system
 
   if use_git == true
+    header("Backup on GIT")
     g = Git.open(@backup)
     if g and g.index.readable? and g.index.writable?
       message = "Stuff backuped on #{Time.now}"
