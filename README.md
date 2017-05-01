@@ -23,6 +23,12 @@ I'm sick of configuring my computer from scratch evrytime I get a new machine. I
 * Set ```chmod``` to execute your ```pantry.rb``` file [600 should be ok?]
 * Set a crontab (if you know how!) to run the script every x hours
 
+## Run the CheckUP
+
+Running ```./pantry.rb check``` will show some info grabbed from the config file. It's just a simple way to check if everything is ok.
+
+# Usage 
+
 ## The easy way: use Dropbox or any other cloud system
 
 Just create a folder in your dropbox/drive or other cloud storage system and copy the absolute path in ```local_folder``` in ```pantry_config.yml```.
@@ -48,7 +54,7 @@ Use GIT, clone your private repo in a dropbox folder and set in it in the local_
 
 ## Restore from backup
 
-Once you have your software installed (ie. zsh, oh-my-zsh, sublime ecc) on your new mac/pc, you just have to clone your private repo and run ```./pantry.sh restore``` to copy all files in their original position, according to the path written in the config file, stuff section.
+Once you have your software installed (ie. zsh, oh-my-zsh, sublime ecc) on your new mac/pc, you just have to clone your private repo and run ```./pantry.rb restore``` to copy all files in their original position, according to the path written in the config file, stuff section.
 
 Restoring might be a delicate operation, since it overwrites files in your HOME. Do it carefully. If you don't know what you are doing, avoid the automatic restoring and copy the files manually from the backup folder.
 
