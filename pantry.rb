@@ -68,17 +68,17 @@ if File.exists?(@config_file)
 
   if config["local_dev_folder"].nil? || config["local_dev_folder"] == "" || config["local_dev_folder"] == "[path-to-your-development-folders]"
     @dev = nil
-  elsif check_path?(config["local_dev_folder"]) == false
+  elsif check_path?("#{@home}/#{config["local_dev_folder"]}") == false
     die "The dev sites is not a valid folder."
   else
-    @dev = config["local_dev_folder"]
+    @dev = "#{@home}/#{config["local_dev_folder"]}"
   end
 
   if config["dev_files"].nil? || config["dev_files"] == ""
     puts "You haven't defined any dev files to backup"
     @dev = nil
   else
-    @dev_folder = Pathname.new(config["local_dev_folder"])
+    @dev_folder = Pathname.new(@dev)
     @dev_files = config["dev_files"].split(" ")
   end
 
@@ -113,11 +113,18 @@ if @check
 
       @dev_folder.children.select { |prj|
         next if !prj.directory?
-        puts "Project: #{prj}"
 
+        @project_dev_files = []
         @dev_files.each do |f|
           if File.exists?("#{prj}/#{f}")
-            puts "     > #{f} has been found"
+            @project_dev_files.push(f)
+          end
+        end
+
+        if @project_dev_files.count > 0
+          puts "Project: #{prj.basename}"
+          @project_dev_files.each do |name|
+            puts "     > #{name} has been found"
           end
         end
       }
@@ -168,11 +175,11 @@ if @restore
 end
 
 
-if not @restore
+if !@restore
   # I want to copy a set of files or folders into a different specific (eg dropbox folder)
   # each file goes in a defined path
 
-  header("Backup everything")
+  header("Backup Files")
   stuff.each do |k, ctx|
     from = "#{@home}/#{ctx}"
     dest_path = Pathname.new(ctx)
@@ -207,7 +214,34 @@ if not @restore
       end
     end
   end
+  if @dev_folder.directory?
+    header("Backup Dev files")
+    puts "Directory development found: #{@dev_folder}"
 
+    @dev_folder.children.select { |prj|
+      next if !prj.directory?
+
+      @project_dev_files = []
+      @dev_files.each do |f|
+        if File.exists?("#{prj}/#{f}")
+          @project_dev_files.push(f)
+        end
+      end
+
+      if @project_dev_files.count > 0
+        from = prj
+        dest = "#{@backup}/#{config['local_dev_folder']}/#{prj.basename}"
+        FileUtils.mkpath dest
+        puts "Create directory: #{prj.basename}"
+
+        @project_dev_files.each do |name|
+          file_path = "#{prj}/#{name}"
+          FileUtils.mkpath dest
+          puts "     > Copying #{name}"
+        end
+      end
+    }
+  end
 
   # if you have choosen to use GIT as backup system
 
