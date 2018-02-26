@@ -72,15 +72,15 @@ if File.exists?(@config_file)
     die "The dev sites is not a valid folder."
   else
     @dev = "#{@home}/#{config["local_dev_folder"]}"
+    if config["dev_files"].nil? || config["dev_files"] == ""
+      puts "You haven't defined any dev files to backup"
+      @dev = nil
+    else
+      @dev_folder = Pathname.new(@dev)
+      @dev_files = config["dev_files"].split(" ")
+    end
   end
 
-  if config["dev_files"].nil? || config["dev_files"] == ""
-    puts "You haven't defined any dev files to backup"
-    @dev = nil
-  else
-    @dev_folder = Pathname.new(@dev)
-    @dev_files = config["dev_files"].split(" ")
-  end
 
 else
   die "Missing config file"
