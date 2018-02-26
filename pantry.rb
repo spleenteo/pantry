@@ -20,7 +20,6 @@ def header(msg)
   puts "--------------------------------------"
 end
 
-
 @pantry_path = Pathname.new($0).realpath().sub("pantry.rb", "")
 @config_file = "#{@pantry_path}pantry_config.yml"
 @restore     ||= false
@@ -66,6 +65,23 @@ if File.exists?(@config_file)
   if stuff.nil? || stuff.empty?
     die "There's nothing to backup"
   end
+
+  if config["local_dev_folder"].nil? || config["local_dev_folder"] == "" || config["local_dev_folder"] == "[path-to-your-development-folders]"
+    @dev = nil
+  elsif check_path?("#{@home}/#{config["local_dev_folder"]}") == false
+    die "The dev sites is not a valid folder."
+  else
+    @dev = "#{@home}/#{config["local_dev_folder"]}"
+    if config["dev_files"].nil? || config["dev_files"] == ""
+      puts "You haven't defined any dev files to backup"
+      @dev = nil
+    else
+      @dev_folder = Pathname.new(@dev)
+      @dev_files = config["dev_files"].split(" ")
+    end
+  end
+
+
 else
   die "Missing config file"
 end
@@ -75,13 +91,45 @@ if @check
   header("Check Up")
   puts "Pantry path: #{@pantry_path}"
   puts "Local folder: #{@backup}"
+  puts "Use GIT: #{use_git}"
   puts "Items in stuff: #{stuff.count}"
 
   puts "Items list:"
   stuff.each do |k, ctx|
     puts "- #{k}"
   end
-  puts "Use GIT: #{use_git}"
+
+  if @dev.nil?
+    puts "You don't want to backup development special files."
+  else
+    header("DEV FILES")
+    puts "Development special files backup is active."
+    puts "File di sviluppo da backuppare: #{@dev_files.count}"
+    puts @dev_files
+
+    if @dev_folder.directory?
+      header("DEV PROJECTS")
+      puts "Directory development found: #{@dev_folder}"
+
+      @dev_folder.children.select { |prj|
+        next if !prj.directory?
+
+        @project_dev_files = []
+        @dev_files.each do |f|
+          if File.exists?("#{prj}/#{f}")
+            @project_dev_files.push(f)
+          end
+        end
+
+        if @project_dev_files.count > 0
+          puts "Project: #{prj.basename}"
+          @project_dev_files.each do |name|
+            puts "     > #{name} has been found"
+          end
+        end
+      }
+    end
+  end
 
   exit
 end
@@ -127,11 +175,11 @@ if @restore
 end
 
 
-if not @restore
+if !@restore
   # I want to copy a set of files or folders into a different specific (eg dropbox folder)
   # each file goes in a defined path
 
-  header("Backup everything")
+  header("Backup Files")
   stuff.each do |k, ctx|
     from = "#{@home}/#{ctx}"
     dest_path = Pathname.new(ctx)
@@ -166,7 +214,34 @@ if not @restore
       end
     end
   end
+  if @dev_folder.directory?
+    header("Backup Dev files")
+    puts "Directory development found: #{@dev_folder}"
 
+    @dev_folder.children.select { |prj|
+      next if !prj.directory?
+
+      @project_dev_files = []
+      @dev_files.each do |f|
+        if File.exists?("#{prj}/#{f}")
+          @project_dev_files.push(f)
+        end
+      end
+
+      if @project_dev_files.count > 0
+        from = prj
+        dest = "#{@backup}/#{config['local_dev_folder']}/#{prj.basename}"
+        FileUtils.mkpath dest
+        puts "Create directory: #{prj.basename}"
+
+        @project_dev_files.each do |name|
+          file_path = "#{prj}/#{name}"
+          FileUtils.mkpath dest
+          puts "     > Copying #{name}"
+        end
+      end
+    }
+  end
 
   # if you have choosen to use GIT as backup system
 
