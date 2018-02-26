@@ -4,6 +4,8 @@ pantry:
     home: "[path-to-your-home]"
     local_folder: "[path-to-your-dropbox-or-git-folder]"
     use_git: false
+    local_dev_folder: "[path-to-your-development-folders]"
+    dev_files: "[files-to-backup-from-dev-folder splitted-by-space]"
 
   stuff:
     # WARNING: if you want to copy the content of a folder
