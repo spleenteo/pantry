@@ -20,7 +20,6 @@ def header(msg)
   puts "--------------------------------------"
 end
 
-
 @pantry_path = Pathname.new($0).realpath().sub("pantry.rb", "")
 @config_file = "#{@pantry_path}pantry_config.yml"
 @restore     ||= false
@@ -66,6 +65,23 @@ if File.exists?(@config_file)
   if stuff.nil? || stuff.empty?
     die "There's nothing to backup"
   end
+
+  if config["local_dev_folder"].nil? || config["local_dev_folder"] == "" || config["local_dev_folder"] == "[path-to-your-development-folders]"
+    @dev = nil
+  elsif check_path?(config["local_dev_folder"]) == false
+    die "The dev sites is not a valid folder."
+  else
+    @dev = config["local_dev_folder"]
+  end
+
+  if config["dev_files"].nil? || config["dev_files"] == ""
+    puts "You haven't defined any dev files to backup"
+    @dev = nil
+  else
+    @dev_folder = Pathname.new(config["local_dev_folder"])
+    @dev_files = config["dev_files"].split(" ")
+  end
+
 else
   die "Missing config file"
 end
@@ -75,13 +91,38 @@ if @check
   header("Check Up")
   puts "Pantry path: #{@pantry_path}"
   puts "Local folder: #{@backup}"
+  puts "Use GIT: #{use_git}"
   puts "Items in stuff: #{stuff.count}"
 
   puts "Items list:"
   stuff.each do |k, ctx|
     puts "- #{k}"
   end
-  puts "Use GIT: #{use_git}"
+
+  if @dev.nil?
+    puts "You don't want to backup development special files."
+  else
+    header("DEV FILES")
+    puts "Development special files backup is active."
+    puts "File di sviluppo da backuppare: #{@dev_files.count}"
+    puts @dev_files
+
+    if @dev_folder.directory?
+      header("DEV PROJECTS")
+      puts "Directory development found: #{@dev_folder}"
+
+      @dev_folder.children.select { |prj|
+        next if !prj.directory?
+        puts "Project: #{prj}"
+
+        @dev_files.each do |f|
+          if File.exists?("#{prj}/#{f}")
+            puts "     > #{f} has been found"
+          end
+        end
+      }
+    end
+  end
 
   exit
 end
