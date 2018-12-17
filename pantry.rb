@@ -77,7 +77,7 @@ if File.exists?(@config_file)
       @dev = nil
     else
       @dev_folder = Pathname.new(@dev)
-      @dev_files = config["dev_files"].split(" ")
+      @dev_files = config["dev_files"].split(":")
     end
   end
 
