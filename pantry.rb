@@ -34,6 +34,9 @@ ARGV.each do|a|
   end
 end
 
+puts `brew list > ~/bin/brew.txt`
+puts `brew cask list > ~/bin/cask.txt`
+
 
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
