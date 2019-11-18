@@ -16,8 +16,9 @@ end
 
 def header(msg)
   puts "\n\n--------------------------------------"
-  puts "==> #{msg}"
-  puts "--------------------------------------"
+  puts "#{msg}"
+  puts "---------------------------------------"
+  puts " "
 end
 
 @pantry_path = Pathname.new($0).realpath().sub("pantry.rb", "")
@@ -36,6 +37,7 @@ end
 
 puts `brew list > ~/bin/brew.txt`
 puts `brew cask list > ~/bin/cask.txt`
+header("Brew and Cask: list of the installed software exported")
 
 
 # Check if config file exists and load it
