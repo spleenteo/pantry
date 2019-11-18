@@ -252,7 +252,7 @@ if !@restore
     header("Backup on GIT")
     g = Git.open(@backup)
     if g and g.index.readable? and g.index.writable?
-      message = "Stuff backuped on #{Time.now}"
+      message = "New backup - #{Time.now}"
       g.add(:all=>true)
 
       if g.status.changed.count > 0
