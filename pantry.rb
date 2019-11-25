@@ -35,10 +35,6 @@ ARGV.each do|a|
   end
 end
 
-puts `brew list > ~/bin/brew.txt`
-puts `brew cask list > ~/bin/cask.txt`
-header("Brew and Cask: list of the installed software exported")
-
 
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
@@ -254,6 +250,14 @@ if !@restore
       end
     }
   end
+
+
+  if use_brew == true
+    puts `brew list > "#{@backup}/Brew.txt"`
+    puts `brew cask list > "#{@backup}/Cask.txt"`
+    header("Brew and Cask: list of the installed software exported")
+  end
+
 
   # if you have choosen to use GIT as backup system
 
