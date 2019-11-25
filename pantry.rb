@@ -100,6 +100,7 @@ if @check
   puts "Pantry path: #{@pantry_path}"
   puts "Local folder: #{@backup}"
   puts "Use GIT: #{use_git}"
+  puts "Use Brew and cask: #{use_brew}"
   puts "Items in stuff: #{stuff.count}"
 
   puts "Items list:"
