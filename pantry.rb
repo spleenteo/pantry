@@ -15,7 +15,7 @@ def die(msg)
 end
 
 def header(msg)
-  puts "\n\n--------------------------------------"
+  puts "\n--------------------------------------"
   puts "#{msg}"
   puts "---------------------------------------"
   puts " "
@@ -38,9 +38,6 @@ end
 puts `brew list > ~/bin/brew.txt`
 puts `brew cask list > ~/bin/cask.txt`
 header("Brew and Cask: list of the installed software exported")
-
-puts `find ~/Sites -maxdepth 1 -type d > ~/bin/Sites.txt`
-header("Sites list exported")
 
 
 # Check if config file exists and load it
@@ -86,6 +83,13 @@ if File.exists?(@config_file)
     else
       @dev_folder = Pathname.new(@dev)
       @dev_files = config["dev_files"].split(":")
+
+      # Save the full list of the directories in a txt file
+      # to remember the projects you have in your computer in this very moment
+
+      puts `find ~/Sites -maxdepth 1 -type d > ~/bin/#{config["local_dev_folder"]}.txt`
+      header("Projects in #{config["local_dev_folder"]} folder exported as a list")
+
     end
   end
 
