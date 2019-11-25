@@ -39,6 +39,9 @@ puts `brew list > ~/bin/brew.txt`
 puts `brew cask list > ~/bin/cask.txt`
 header("Brew and Cask: list of the installed software exported")
 
+puts `find ~/Sites -maxdepth 1 -type d > ~/bin/Sites.txt`
+header("Sites list exported")
+
 
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
