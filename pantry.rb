@@ -15,7 +15,7 @@ def die(msg)
 end
 
 def header(msg)
-  puts "\n\n--------------------------------------"
+  puts "\n--------------------------------------"
   puts "#{msg}"
   puts "---------------------------------------"
   puts " "
@@ -35,24 +35,16 @@ ARGV.each do|a|
   end
 end
 
-puts `brew list > ~/bin/brew.txt`
-puts `brew cask list > ~/bin/cask.txt`
-header("Brew and Cask: list of the installed software exported")
-
-puts `find ~/Sites -maxdepth 1 -type d > ~/bin/Sites.txt`
-header("Sites list exported")
-
 
 # Check if config file exists and load it
 # If it does not exist, prompt a warning message and exit
 # Also Check if config folders are valid
-
-
 if File.exists?(@config_file)
   yml     = YAML.load_file(@config_file)
   config  = yml["pantry"]["config"]
   stuff   = yml["pantry"]["stuff"]
   use_git = yml["pantry"]["config"]["use_git"] || false
+  use_brew = yml["pantry"]["config"]["use_brew"] || false
 
   if config["home"].nil? || config["home"] == "" || config["home"] == "[path-to-your-home]"
     die "Need to know your home path"
@@ -100,6 +92,7 @@ if @check
   puts "Pantry path: #{@pantry_path}"
   puts "Local folder: #{@backup}"
   puts "Use GIT: #{use_git}"
+  puts "Use Brew and cask: #{use_brew}"
   puts "Items in stuff: #{stuff.count}"
 
   puts "Items list:"
@@ -250,6 +243,21 @@ if !@restore
       end
     }
   end
+
+  if @dev
+    # Save the full list of the directories in a txt file
+    # to remember the projects you have in your computer in this very moment
+    puts `find ~/Sites -maxdepth 1 -type d > "#{@backup}/#{config["local_dev_folder"]}.txt"`
+    header("Projects in #{config["local_dev_folder"]} folder exported as a list")
+  end
+
+  if use_brew == true
+    puts `brew list > "#{@backup}/Brew.txt"`
+    puts `brew cask list > "#{@backup}/Cask.txt"`
+    header("Brew and Cask: list of the installed software exported")
+  end
+
+
 
   # if you have choosen to use GIT as backup system
 
