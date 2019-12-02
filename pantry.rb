@@ -10,7 +10,7 @@ def check_path?(directory)
 end
 
 def die(msg)
-  puts "HORROR!!!! #{msg}"
+  puts "OMG! #{msg}"
   exit
 end
 
@@ -215,9 +215,11 @@ if !@restore
       end
     end
   end
+
+  # Backup of Dev Projects config files
   if @dev_folder.directory?
-    header("Backup Dev files")
-    puts "Directory development found: #{@dev_folder}"
+    header("Saving Important Dev files")
+    puts "Dev Projects Dir found: #{@dev_folder}"
 
     @dev_folder.children.select { |prj|
       next if !prj.directory?
@@ -261,7 +263,7 @@ if !@restore
 
   # if you have choosen to use GIT as backup system
 
-  if use_git == true
+  if use_git
     header("Backup on GIT")
     g = Git.open(@backup)
     if g and g.index.readable? and g.index.writable?
