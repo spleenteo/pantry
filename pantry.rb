@@ -5,6 +5,13 @@ require 'git'
 require 'pathname'
 require 'yaml'
 
+def header(msg)
+  puts "\n👉 #{msg}"
+  puts "--------------------------------------\n\n"
+end
+
+__END__
+
 def check_path?(directory)
   File.exists?(directory)
 end
@@ -14,17 +21,16 @@ def die(msg)
   exit
 end
 
-def header(msg)
-  puts "\n--------------------------------------"
-  puts "#{msg}"
-  puts "---------------------------------------"
-  puts " "
-end
 
-@pantry_path = Pathname.new($0).realpath().sub("pantry.rb", "")
-@config_file = "#{@pantry_path}pantry_config.yml"
-@restore     ||= false
-@test        ||= false
+PANTRY_PATH= Pathname.new($0).realpath().sub("pantry.rb", "")
+config_file = "#{PANTRY_PATH}pantry_config.yml"
+#@restore     ||= false
+#@test        ||= false
+
+yml     = YAML.load_file(config_file)
+config  = yml["pantry"]["config"]
+dev_files = config["dev_files"].split(":")
+local_folder = config["local_folder"]
 
 ARGV.each do|a|
   case a
@@ -34,6 +40,54 @@ ARGV.each do|a|
       @check = true
   end
 end
+
+class Backup
+  def initialize(dry_run:)
+  end
+
+  def run
+  end
+
+  private
+
+  def config
+    @config ||= begin
+      YAML
+    end
+  end
+
+  def dev_files
+    config
+  end
+
+  def copy_project_files(source)
+    path = Pathname.new(source)
+    return if !path.directory?
+
+    copied = false
+    dev_files.each do |f|
+      pathname = "#{path}/#{f}"
+      next if !File.exists?(pathname)
+
+      puts "Project: #{path.basename}" if !copied
+      copied = true
+      puts "     > #{pathname} has been found"
+      FileUtils.cp pathname, destination if !dry_run
+    end
+  end
+end
+
+copy_project_files(
+  source: "/Users/spleenteo/Sites/acaciafirenze",
+  destination: local_folder,
+  dev_files: dev_files
+)
+
+
+# FAIL FAST
+# Verify pre conditions, all of them
+
+
 
 
 # Check if config file exists and load it
@@ -89,7 +143,7 @@ end
 
 if @check
   header("Check Up")
-  puts "Pantry path: #{@pantry_path}"
+  puts "Pantry path: #{PANTRY_PATH}"
   puts "Local folder: #{@backup}"
   puts "Use GIT: #{use_git}"
   puts "Use Brew and cask: #{use_brew}"
