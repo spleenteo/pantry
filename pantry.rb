@@ -10,16 +10,18 @@ def header(msg)
   puts "--------------------------------------\n\n"
 end
 
+def die(msg)
+  puts "😱 OMG! #{msg}"
+  puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n"
+  exit
+end
+
 __END__
 
 def check_path?(directory)
   File.exists?(directory)
 end
 
-def die(msg)
-  puts "OMG! #{msg}"
-  exit
-end
 
 
 PANTRY_PATH= Pathname.new($0).realpath().sub("pantry.rb", "")
