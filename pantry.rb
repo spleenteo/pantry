@@ -40,11 +40,12 @@ end
 # If it does not exist, prompt a warning message and exit
 # Also Check if config folders are valid
 if File.exists?(@config_file)
-  yml     = YAML.load_file(@config_file)
-  config  = yml["pantry"]["config"]
-  stuff   = yml["pantry"]["stuff"]
-  use_git = yml["pantry"]["config"]["use_git"] || false
-  use_brew = yml["pantry"]["config"]["use_brew"] || false
+  yml        = YAML.load_file(@config_file)
+  config     = yml["pantry"]["config"]
+  stuff      = yml["pantry"]["stuff"]
+  use_git    = yml["pantry"]["config"]["use_git"] || false
+  use_brew   = yml["pantry"]["config"]["use_brew"] || false
+  use_vscode = yml["pantry"]["config"]["use_vscode"] || false
 
   if config["home"].nil? || config["home"] == "" || config["home"] == "[path-to-your-home]"
     die "Need to know your home path"
@@ -257,6 +258,11 @@ if !@restore
     puts `brew list > "#{@backup}/Brew.txt"`
     puts `brew cask list > "#{@backup}/Cask.txt"`
     header("Brew and Cask: list of the installed software exported")
+  end
+
+  if use_vscode == true
+    puts `code --list-extensions > "#{@backup}/vscode-extensions.txt"`
+    header("VS-CODE: list of the installed extensions")
   end
 
 
