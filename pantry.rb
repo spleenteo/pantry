@@ -16,7 +16,62 @@ def die(msg)
   exit
 end
 
+ARGV.each do|a|
+  case a
+    when "restore"
+      RESTORE = true
+    when "check"
+      CHECK = true
+    when nil
+      BACKUP = true
+  end
+end
+
+ACTION = ARGV[0] ||= "backup"
+
+header(ARGV)
+
 __END__
+
+
+class Backup
+  def initialize(dry_run:)
+  end
+
+  def run
+  end
+
+  private
+
+  def config
+    @config ||= begin
+      YAML
+    end
+  end
+
+  def dev_files
+    config
+  end
+
+  def copy_project_files(source)
+    path = Pathname.new(source)
+    return if !path.directory?
+
+    copied = false
+    dev_files.each do |f|
+      pathname = "#{path}/#{f}"
+      next if !File.exists?(pathname)
+
+      puts "Project: #{path.basename}" if !copied
+      copied = true
+      puts "     > #{pathname} has been found"
+      FileUtils.cp pathname, destination if !dry_run
+    end
+  end
+end
+
+Backup.new
+
 
 def check_path?(directory)
   File.exists?(directory)
@@ -34,14 +89,7 @@ config  = yml["pantry"]["config"]
 dev_files = config["dev_files"].split(":")
 local_folder = config["local_folder"]
 
-ARGV.each do|a|
-  case a
-    when "restore"
-      @restore = true
-    when "check"
-      @check = true
-  end
-end
+
 
 class Backup
   def initialize(dry_run:)
